@@ -5,71 +5,11 @@ const TOKEN = "8595292368:AAHyEs9NQxrSnMKiXbJyMUEdII98h51QgG0"
 const bot = new TelegramBot(TOKEN, { polling:true });
 
 
-// Simple in-memory store (production uchun db kerak)
-const userData = {};
-
-// Message handler
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
   const firstName = msg.chat.first_name;
 
-  // Agar foydalanuvchi ro'yxatdan o'tish jarayonida bo'lsa, shu yerda qadamlarni boshqaramiz
-  if (userData[chatId]?.step) {
-    const step = userData[chatId].step;
-
-    if (step === 'name') {
-      // Ismni qabul qilish
-      if (!text) {
-        bot.sendMessage(chatId, "Iltimos, ism va familiyangizni matn sifatida yuboring.");
-        return;
-      }
-      userData[chatId].name = text;
-      userData[chatId].step = 'phone';
-
-      bot.sendMessage(chatId, "Telefon raqamingizni yuboring (masalan: +998901234567):", {
-        reply_markup: {
-          keyboard: [[{ text: '📱 Raqamni yuborish', request_contact: true }]],
-          resize_keyboard: true,
-          one_time_keyboard: true
-        }
-      });
-      return;
-    }
-
-    if (step === 'phone') {
-      // Telefonni qabul qilish — contact yoki text
-      if (msg.contact && msg.contact.phone_number) {
-        userData[chatId].phone = msg.contact.phone_number;
-      } else if (text) {
-        userData[chatId].phone = text;
-      } else {
-        bot.sendMessage(chatId, "Iltimos telefon raqamingizni yuboring.");
-        return;
-      }
-
-      userData[chatId].step = 'course_choice';
-
-      bot.sendMessage(chatId, "Qaysi kursga yozilmoqchisiz?", {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: '🇬🇧 Ingliz tili', callback_data: 'course_english' }],
-            [{ text: '🇷🇺 Rus tili', callback_data: 'course_russian' }],
-            [{ text: '💻 Dasturlash', callback_data: 'course_programming' }],
-            [{ text: '🎨 Dizayn', callback_data: 'course_design' }]
-          ]
-        }
-      });
-      return;
-    }
-
-    if (step === 'done') {
-      bot.sendMessage(chatId, "Siz allaqachon ro'yxatdan o'tgansiz. Agar yangilamoqchi bo'lsangiz, admin bilan bog'laning.");
-      return;
-    }
-  }
-
-  // Oddiy buyruqlar / menyu
   if (text === "/start") {
     bot.sendMessage(chatId, `
 👋 Assalomu alaykum, ${firstName}!
@@ -80,14 +20,13 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
     `, {
       reply_markup: {
         keyboard: [
-          [{ text: "📚 Kurslar" }, { text: "✍️ Ro‘yxatdan o‘tish" }],
+          [{ text: "📚 Kurslar" }, { text: "✍️ Kursga yozilish" }],
           [{ text: "ℹ️ Markaz haqida" }, { text: "💬 Fikr bildirish" }],
           [{ text: "❓ Yordam" }],
         ],
         resize_keyboard: true,
       }
     });
-    return;
   }
 
   if (text === "📚 Kurslar") {
@@ -102,76 +41,105 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
         ]
       }
     });
-    return;
+  } else if (text == "✍️ Kursga yozilish" ) {
+             bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:"); 
+
+  } else if (text == "ℹ️ Markaz haqida") {
+    bot.sendMessage(chatId,`
+      ℹ️ MARKAZ HAQIDA
+
+🎓 100x o‘quv markazi
+📍 Manzil: Xiva IT PARK ichida
+⏰ Ish vaqti: Dush–Yak, 9:00–19:00
+📞 +998 90 123 45 67
+      `)
   }
 
-  if (text === "✍️ Ro‘yxatdan o‘tish") {
-    // Ro'yxatdan o'tishni boshlash — name qadamiga o'tkazamiz
-    userData[chatId] = { step: 'name' };
-    bot.sendMessage(chatId, "Ism va familiyangizni kiriting:");
-    return;
-  }
+   else {
+    bot.sendMessage(
+      chatId,
+      `
+    ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
 
-  // Boshqa xabarlar uchun fallback
-  bot.sendMessage(chatId, `⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.\nIltimos, /start tugmasini bosing.`);
+Iltimos, quyidagi tugmani bosing 👇
+/start
+
+    `
+    );
+  }
 });
 
-// Callback (inline button) handler
 bot.on('callback_query', (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
-  // Har doim callbackni javoblash — shunda Telegramda spinner ketadi
-  bot.answerCallbackQuery(query.id).catch(console.error);
 
-  if (data === 'english') {
-    bot.sendMessage(chatId, `🇬🇧 Ingliz tili kursi (IELTS tayyorlov)\n📘 Maqsad: 5.5 dan 7.0 gacha\n💵 Narxi: 400 ming so‘m / oy`, {
+  if (data ==='english') {
+    bot.sendMessage(chatId, `
+      🇬🇧 Ingliz tili kursi (IELTS tayyorlov)
+📘 Maqsad: 5.5 dan 7.0 gacha olib chiqish
+⏳ Davomiyligi: IELTS olguncha
+💵 Narxi: 500 ming so‘m / oyiga
+👨‍🏫 Ustoz: ....
+      `, {
       reply_markup: {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
     });
-    return;
-  }
-
-  if (data === 'russian') {
-    bot.sendMessage(chatId, `🇷🇺 Rus tili...\n`, {
+  } else if (data === 'russian') {
+    bot.sendMessage(chatId, `
+      🇷🇺 Rus tili (Suhbat darajasi)
+      📘 Maqsad: Ish / o‘qish uchun so‘zlashuv darajasi
+⏳ 2 oy, haftasiga 3 marta
+💵 400 ming so‘m / oy
+👨‍🏫 Ustoz: .....
+      `, {
       reply_markup: {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
     });
-    return;
-  }
-
-  if (data === 'math' || data === 'it' || data === 'design') {
-    // Muvofiq ma'lumotlarni yuboring
-    const map = {
-      math: '🧮 Matematika ...',
-      it: '💻 Dasturlash ...',
-      design: '🎨 Grafik dizayn ...'
-    };
-    bot.sendMessage(chatId, map[data], {
+  } else if (data == "math") {
+    bot.sendMessage(chatId, `
+      🧮 Matematika (maktab va abituriyentlar uchun)
+🎯 Maqsad: Formulalarni to‘liq tushunish va test yechish
+⏳ 4 oy
+💵 450 ming so‘m / oy
+👨‍🏫 Ustoz: .....
+      `, {
       reply_markup: {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
     });
-    return;
-  }
+  } else if(data == "it"){
+        bot.sendMessage(chatId, `
+          💻 Dasturlash (Frontend va Backend)
+🎯 Maqsad: 0 dan Junior darajaga
+⏳ 6 oy
+💵 600 ming so‘m / oy
+👨‍🏫 Mentor: ....
+      `, {
+      reply_markup: {
+        inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
+      }
+    });
+  } else if (data == "design") {
+         bot.sendMessage(chatId, `
+          🎨 Grafika dizayn (Adobe, Canva)
+🎯 Maqsad: Logo, banner, post tayyorlashni o‘rganish
+⏳ 3 oy
+💵 500 ming so‘m / oy
+👨‍🏫 Ustoz: ....
+      `, {
+      reply_markup: {
+        inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
+      }
+    }); 
+  } else if (data =='yozilish' ) {
+    bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:");
+  } else if (text == "✍️ Kursga yozilish" ) {
+       bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
 
-  if (data === 'yozilish') {
-    // Inline tugma orqali yozilishni bosilganda — ro'yxatdan o'tishni boshlaymiz
-    userData[chatId] = { step: 'name' };
-    bot.sendMessage(chatId, "Ajoyib! Ro‘yxatdan o‘tish uchun avvalo ism va familiyangizni kiriting:");
-    return;
-  }
-
-  // Kurs tanlashdan keyingi callback_data lar (masalan course_english)
-  if (data.startsWith('course_')) {
-    userData[chatId] = userData[chatId] || {};
-    userData[chatId].course = data.replace('course_', '');
-    userData[chatId].step = 'done';
-    bot.sendMessage(chatId, `Siz ${userData[chatId].course} kursiga yozildingiz. Biz siz bilan tez orada bog'lanamiz.\n\nIsm: ${userData[chatId].name || '—'}\nTelefon: ${userData[chatId].phone || '—'}`);
-    return;
-  }
+  } 
 });
 
 console.log("Bot ishga tushdi...");
