@@ -4,6 +4,7 @@ const TOKEN = "8595292368:AAHyEs9NQxrSnMKiXbJyMUEdII98h51QgG0"
 
 const bot = new TelegramBot(TOKEN, { polling:true });
 
+      
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
@@ -51,10 +52,27 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
 🎓 100x o‘quv markazi
 📍 Manzil: Xiva IT PARK ichida
 ⏰ Ish vaqti: Dush–Yak, 9:00–19:00
-📞 +998 90 123 45 67
+📞 .........
+      `)
+  } else if (text == "💬 Fikr bildirish" ){
+    bot.sendMessage(chatId,
+      `
+      💬 Marxamat, o‘quv markazimiz haqida fikr qoldirishingiz mumkin.
+
+Quyidagilardan birini tanlang 👇
+      `, {
+        reply_markup:{
+          inline_keyboard:[
+            [{text: "⭐ Baxolash", callback_data:"baxolash"}],
+            [{text: "✍️ Matn yozish",callback_data:"matn yozish"}]
+          ]
+        }
+      })
+  } else if (text == "❓ Yordam") {
+    bot.sendMessage(chatId,`
+      Yordam uchun Admin ga murojat qiling
       `)
   }
-
    else {
     bot.sendMessage(
       chatId,
@@ -134,12 +152,31 @@ bot.on('callback_query', (query) => {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
     }); 
-  } else if (data =='yozilish' ) {
+  } else if (data == 'yozilish' ) {
     bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:");
   } else if (text == "✍️ Kursga yozilish" ) {
        bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
 
-  } 
+  } else if (data == "baxolash") {
+    bot.sendMessage(
+      chatId,
+      `
+Nechchi ball bilan baholaysiz?
+Iltimos, quyidagi yulduzlardan birini tanlang ⭐
+      `,
+      {
+        reply_markup: {
+          keyboard: [
+            [{ text: "⭐ 1", callback_data: "1" }],
+            [{ text: "⭐⭐ 2", callback_data: "2" }],
+            [{ text: "⭐⭐⭐ 3", callback_data: "3" }],
+            [{ text: "⭐⭐⭐⭐ 4", callback_data: "4" }],
+            [{ text: "⭐⭐⭐⭐⭐ 5", callback_data: "5" }]
+          ]
+        },
+      }
+    );
+  }
 });
 
 console.log("Bot ishga tushdi...");
