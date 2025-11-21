@@ -1,10 +1,17 @@
 import TelegramBot from "node-telegram-bot-api";
+import { config } from "dotenv";
+config();
 
-const TOKEN = "8595292368:AAHyEs9NQxrSnMKiXbJyMUEdII98h51QgG0"
+const TOKEN = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(TOKEN, { polling:true });
 
-      
+let usersData = [
+    { chatId: 2107803986, firstName: "𝓈𝒽ℴ𝓍𝓇𝓊𝓍", admin: true },
+    { chatId: 5710316881, firstName: '.', admin: true}
+
+
+]
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
@@ -12,6 +19,17 @@ bot.on('message', (msg) => {
   const firstName = msg.chat.first_name;
 
   if (text === "/start") {
+    const userExists = usersData.find((user) => user.chatId === chatId);
+
+    console.log(!!userExists);
+
+    if (!userExists) {
+      usersData = [...usersData, { chatId: chatId,firstName: firstName }];
+    } 
+
+    console.log(usersData);
+    
+    
     bot.sendMessage(chatId, `
 👋 Assalomu alaykum, ${firstName}!
 
@@ -42,10 +60,27 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
         ]
       }
     });
-  } else if (text == "✍️ Kursga yozilish" ) {
-             bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:"); 
+  // } else if (text == "✍️ Kursga yozilish" ) {
+  //            bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:"); 
 
-  } else if (text == "ℹ️ Markaz haqida") {
+   } 
+  else if (text == "✍️ Kursga yozilish") {
+    for (let tgUser of usersData) {
+      if (tgUser.admin === true) {
+        bot.sendMessage(
+          tgUser.chatId,
+          `Yangi xabar ✅\nUser: ${firstName}\nchatId: ${chatId}`
+        );
+      }
+    }
+
+    bot.sendMessage(
+      chatId,
+      `Ma'lumotlaringiz saqlandi va operatorlarimizga yuborildi ✅`
+    );
+  }
+
+   else if (text == "ℹ️ Markaz haqida") {
     bot.sendMessage(chatId,`
       ℹ️ MARKAZ HAQIDA
 
@@ -71,20 +106,21 @@ Quyidagilardan birini tanlang 👇
   } else if (text == "❓ Yordam") {
     bot.sendMessage(chatId,`
       Yordam uchun Admin ga murojat qiling
+      Admin:  @abdushar1pov_1
       `)
-  }
-   else {
-    bot.sendMessage(
-      chatId,
-      `
-    ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
+   }
+   // else {
+//     bot.sendMessage(
+//       chatId,
+//       `
+//     ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
 
-Iltimos, quyidagi tugmani bosing 👇
-/start
+// Iltimos, quyidagi tugmani bosing 👇
+// /start
 
-    `
-    );
-  }
+//     `
+//     );
+//   }
 });
 
 bot.on('callback_query', (query) => {
@@ -154,10 +190,10 @@ bot.on('callback_query', (query) => {
     }); 
   } else if (data == 'yozilish' ) {
     bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:");
-  } else if (text == "✍️ Kursga yozilish" ) {
-       bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
+  // } else if (text == "✍️ Kursga yozilish" ) {
+  //      bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
 
-  } else if (data == "baxolash") {
+ } else if (data == "baxolash") {
     bot.sendMessage(
       chatId,
       `
@@ -166,7 +202,7 @@ Iltimos, quyidagi yulduzlardan birini tanlang ⭐
       `,
       {
         reply_markup: {
-          keyboard: [
+          inline_keyboard: [
             [{ text: "⭐ 1", callback_data: "1" }],
             [{ text: "⭐⭐ 2", callback_data: "2" }],
             [{ text: "⭐⭐⭐ 3", callback_data: "3" }],
@@ -176,7 +212,17 @@ Iltimos, quyidagi yulduzlardan birini tanlang ⭐
         },
       }
     );
-  }
+  } else if  (data == "1"){
+    bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } else if (data == "2") {
+      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } else if (data == "3") {
+      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } else if (data == "4") {
+      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } else if (data == "5") {
+      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } 
 });
 
 console.log("Bot ishga tushdi...");
