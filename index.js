@@ -8,7 +8,9 @@ const bot = new TelegramBot(TOKEN, { polling:true });
 
 let usersData = [
     { chatId: 2107803986, firstName: "𝓈𝒽ℴ𝓍𝓇𝓊𝓍", admin: true },
-    { chatId: 5710316881, firstName: '.', admin: true}
+    { chatId: 5710316881, firstName: '.', admin: false},
+     { chatId: 7347232559, firstName: 'Davlatnazarov', admin: true }
+
 
 
 ]
@@ -222,6 +224,8 @@ Iltimos, quyidagi yulduzlardan birini tanlang ⭐
       bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
   } else if (data == "5") {
       bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  }  else if (data == "matn yozish") {
+    bot.sendMessage(chatId,`Fikr yozing `)
   } 
 });
 
