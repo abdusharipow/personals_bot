@@ -3,23 +3,23 @@ import { config } from "dotenv";
 import mongoose from "mongoose";
 config();
 mongoose
-.connect(process.env.MONGO_URI)
-.then(() => {
-  console.log("Db is connected...");
-})
-.catch(() => {
-  console.log("Eror: Db is not connected");
-  
-})
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Db is connected...");
+  })
+  .catch(() => {
+    console.log("Eror: Db is not connected");
+
+  })
 
 const TOKEN = process.env.BOT_TOKEN;
 
-const bot = new TelegramBot(TOKEN, { polling:true });
+const bot = new TelegramBot(TOKEN, { polling: true });
 
 let usersData = [
-    { chatId: 2107803986, firstName: "𝓈𝒽ℴ𝓍𝓇𝓊𝓍", admin: true },
-    { chatId: 5710316881, firstName: '.', admin: true},
-     { chatId: 7347232559, firstName: 'Davlatnazarov', admin: true }
+  { chatId: 2107803986, firstName: "𝓈𝒽ℴ𝓍𝓇𝓊𝓍", admin: true },
+  { chatId: 5710316881, firstName: '.', admin: true },
+  { chatId: 7347232559, firstName: 'Davlatnazarov', admin: true }
 
 
 
@@ -36,12 +36,12 @@ bot.on('message', (msg) => {
     console.log(!!userExists);
 
     if (!userExists) {
-      usersData = [...usersData, { chatId: chatId,firstName: firstName }];
-    } 
+      usersData = [...usersData, { chatId: chatId, firstName: firstName }];
+    }
 
     console.log(usersData);
-    
-    
+
+
     bot.sendMessage(chatId, `
 👋 Assalomu alaykum, ${firstName}!
 
@@ -72,10 +72,10 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
         ]
       }
     });
-  // } else if (text == "✍️ Kursga yozilish" ) {
-  //            bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:"); 
+    // } else if (text == "✍️ Kursga yozilish" ) {
+    //            bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:"); 
 
-   } 
+  }
   else if (text == "✍️ Kursga yozilish") {
     for (let tgUser of usersData) {
       if (tgUser.admin === true) {
@@ -92,8 +92,8 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
     );
   }
 
-   else if (text == "ℹ️ Markaz haqida") {
-    bot.sendMessage(chatId,`
+  else if (text == "ℹ️ Markaz haqida") {
+    bot.sendMessage(chatId, `
       ℹ️ MARKAZ HAQIDA
 
 🎓 100x o‘quv markazi
@@ -101,29 +101,29 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
 ⏰ Ish vaqti: Dush–Yak, 9:00–19:00
 📞 .........
       `)
-  } else if (text == "💬 Fikr bildirish" ){
+  } else if (text == "💬 Fikr bildirish") {
     bot.sendMessage(chatId,
       `
       💬 Marxamat, o‘quv markazimiz haqida fikr qoldirishingiz mumkin.
 
 Quyidagilardan birini tanlang 👇
       `, {
-        reply_markup:{
-          inline_keyboard:[
-            [{text: "⭐ Baxolash", callback_data:"baxolash"}],
-            [{text: "✍️ Matn yozish",callback_data:"matn yozish"}]
-          ]
-        }
-      })
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "⭐ Baxolash", callback_data: "baxolash" }],
+          [{ text: "✍️ Matn yozish", callback_data: "matn yozish" }]
+        ]
+      }
+    })
   } else if (text == "❓ Yordam") {
-    bot.sendMessage(chatId,`
+    bot.sendMessage(chatId, `
       Yordam uchun Admin ga murojat qiling
       Admin:  @abdushar1pov_1
       `)
-   }
-    else {
+  }
+  else {
     bot.sendMessage(
-     chatId,
+      chatId,
       `
      ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
 
@@ -132,7 +132,7 @@ Quyidagilardan birini tanlang 👇
 
      `
     );
-     }
+  }
 });
 
 bot.on('callback_query', (query) => {
@@ -140,7 +140,7 @@ bot.on('callback_query', (query) => {
   const data = query.data;
 
 
-  if (data ==='english') {
+  if (data === 'english') {
     bot.sendMessage(chatId, `
       🇬🇧 Ingliz tili kursi (IELTS tayyorlov)
 📘 Maqsad: 5.5 dan 7.0 gacha olib chiqish
@@ -176,8 +176,8 @@ bot.on('callback_query', (query) => {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
     });
-  } else if(data == "it"){
-        bot.sendMessage(chatId, `
+  } else if (data == "it") {
+    bot.sendMessage(chatId, `
           💻 Dasturlash (Frontend va Backend)
 🎯 Maqsad: 0 dan Junior darajaga
 ⏳ 6 oy
@@ -189,7 +189,7 @@ bot.on('callback_query', (query) => {
       }
     });
   } else if (data == "design") {
-         bot.sendMessage(chatId, `
+    bot.sendMessage(chatId, `
           🎨 Grafika dizayn (Adobe, Canva)
 🎯 Maqsad: Logo, banner, post tayyorlashni o‘rganish
 ⏳ 3 oy
@@ -199,13 +199,13 @@ bot.on('callback_query', (query) => {
       reply_markup: {
         inline_keyboard: [[{ text: "✍️ Kursga yozilish", callback_data: "yozilish" }]]
       }
-    }); 
-  } else if (data == 'yozilish' ) {
+    });
+  } else if (data == 'yozilish') {
     bot.sendMessage(chatId, "Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:");
-  // } else if (text == "✍️ Kursga yozilish" ) {
-  //      bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
+    // } else if (text == "✍️ Kursga yozilish" ) {
+    //      bot.sendMessage(chatId,"Ajoyib! Qursga yozilish  uchun avvalo ism va familiyangizni kiriting:",); 
 
- } else if (data == "baxolash") {
+  } else if (data == "baxolash") {
     bot.sendMessage(
       chatId,
       `
@@ -224,19 +224,19 @@ Iltimos, quyidagi yulduzlardan birini tanlang ⭐
         },
       }
     );
-  } else if  (data == "1"){
+  } else if (data == "1") {
     bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
   } else if (data == "2") {
-      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+    bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
   } else if (data == "3") {
-      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+    bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
   } else if (data == "4") {
-      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+    bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
   } else if (data == "5") {
-      bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
-  }  else if (data == "matn yozish") {
-    bot.sendMessage(chatId,`Fikr yozing `)
-  } 
+    bot.sendMessage(chatId, `Raxmat,balingiz qabul qilindi ✅`)
+  } else if (data == "matn yozish") {
+    bot.sendMessage(chatId, `Fikr yozing `)
+  }
 });
 
 console.log("Bot ishga tushdi...");
