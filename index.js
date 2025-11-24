@@ -1,6 +1,16 @@
 import TelegramBot from "node-telegram-bot-api";
 import { config } from "dotenv";
+import mongoose from "mongoose";
 config();
+mongoose
+.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log("Db is connected...");
+})
+.catch(() => {
+  console.log("Eror: Db is not connected");
+  
+})
 
 const TOKEN = process.env.BOT_TOKEN;
 
@@ -8,7 +18,7 @@ const bot = new TelegramBot(TOKEN, { polling:true });
 
 let usersData = [
     { chatId: 2107803986, firstName: "𝓈𝒽ℴ𝓍𝓇𝓊𝓍", admin: true },
-    { chatId: 5710316881, firstName: '.', admin: false},
+    { chatId: 5710316881, firstName: '.', admin: true},
      { chatId: 7347232559, firstName: 'Davlatnazarov', admin: true }
 
 
@@ -47,7 +57,7 @@ Quyidagi menyudan kerakli bo‘limni tanlang 👇
         ],
         resize_keyboard: true,
       }
-    });
+    }); return;
   }
 
   if (text === "📚 Kurslar") {
@@ -111,18 +121,18 @@ Quyidagilardan birini tanlang 👇
       Admin:  @abdushar1pov_1
       `)
    }
-   // else {
-//     bot.sendMessage(
-//       chatId,
-//       `
-//     ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
+    else {
+    bot.sendMessage(
+     chatId,
+      `
+     ⚠️ Kechirasiz, men sizning xabaringizni tushunmadim.
 
-// Iltimos, quyidagi tugmani bosing 👇
-// /start
+ Iltimos, quyidagi tugmani bosing 👇
+  /start
 
-//     `
-//     );
-//   }
+     `
+    );
+     }
 });
 
 bot.on('callback_query', (query) => {
