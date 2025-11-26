@@ -118,7 +118,7 @@ Quyidagilardan birini tanlang 👇
   } else if (text == "❓ Yordam") {
     bot.sendMessage(chatId, `
       Yordam uchun Admin ga murojat qiling
-      Admin:  @abdushar1pov_1
+      Admin:  @shoxruxx_abdushar1povv
       `)
   }
   else {
